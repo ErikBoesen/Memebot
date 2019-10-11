@@ -37,7 +37,7 @@ def receive():
     # Begin reply process in a new thread.
     # This way, the request won't time out if a response takes too long to generate.
     Thread(target=reply, args=(message, group_id)).start()
-    return "ok", 200
+    return "ok", 202
 
 
 def reply(message, group_id):
@@ -53,7 +53,8 @@ def process_message(message):
             query = instructions[0] if len(instructions) > 0 else ""
             # If not, query appropriate module for a response
             if template == "help":
-                responses.append(f"Generate a meme as follows:\n\n{PREFIX}[template name]\nFirst caption\nSecond caption\netc.\n\n" + factory.list_templates())
+                responses.append(f"Generate a meme as follows:\n\n{PREFIX}[template name]\nFirst caption\nSecond caption\netc.\n\n")
+                responses.append(factory.list_templates())
             else:
                 # Make sure there are enough arguments
                 responses.append(factory.response(template, query))
