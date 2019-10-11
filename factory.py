@@ -2,6 +2,7 @@ from PIL import Image, ImageFont, ImageDraw
 from textwrap import wrap
 import requests
 import os
+from io import BytesIO
 
 class Factory:
     DESCRIPTION = ""
