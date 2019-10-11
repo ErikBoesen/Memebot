@@ -103,7 +103,7 @@ def send(message, group_id):
 @app.route("/")
 @cache.cached(timeout=CACHE_TIMEOUT)
 def home():
-    return render_template("index.html", static_commands=static_commands.keys(), commands=[(key, commands[key].DESCRIPTION) for key in commands])
+    return render_template("index.html")
 
 
 # Module interfaces
@@ -111,8 +111,8 @@ def home():
 @cache.cached(timeout=CACHE_TIMEOUT)
 def memes():
     return render_template("memes.html",
-                           memes=zip(commands["meme"].templates.keys(),
-                                     [len(commands["meme"].templates[template]) - 1 for template in commands["meme"].templates]))
+                           memes=zip(factory.templates.keys(),
+                                     [len(factory.templates[template]) - 1 for template in factory.templates]))
 
 
 # Local testing
