@@ -33,6 +33,7 @@ def receive():
     # Retrieve data on that single GroupMe message.
     message = request.get_json()
     group_id = message["group_id"]
+    print(message)
     # Begin reply process in a new thread.
     # This way, the request won't time out if a response takes too long to generate.
     Thread(target=reply, args=(message, group_id)).start()
@@ -93,6 +94,8 @@ def send(message, group_id):
     # It would be rejected anyway
     if data["text"] or data.get("picture_url"):
         response = requests.post("https://api.groupme.com/v3/bots/post", data=data)
+        print("Response:")
+        print(data)
 
 
 # Core routing
