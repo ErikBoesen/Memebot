@@ -1,5 +1,6 @@
 # Flask
 from flask import Flask, request, render_template, redirect
+from flask_caching import Cache
 
 # Other
 import mebots
@@ -11,7 +12,10 @@ import argparse
 # Bot components
 from factory import Factory
 
+CACHE_TIMEOUT = 60 * 60
+
 app = Flask(__name__)
+cache = Cache(app, config={"CACHE_TYPE": "simple"})
 bot = mebots.Bot("memebot", os.environ.get("BOT_TOKEN"))
 
 MAX_MESSAGE_LENGTH = 1000
@@ -42,8 +46,8 @@ def reply(message, group_id):
 def process_message(message):
     responses = []
     if message["sender_type"] == "user":
-        if message.text.startswith(PREFIX):
-            instructions = message.text[len(PREFIX):].strip().split(None, 1)
+        if message["text"].startswith(PREFIX):
+            instructions = message["text"][len(PREFIX):].strip().split(None, 1)
             template = instructions.pop(0).lower()
             query = instructions[0] if len(instructions) > 0 else ""
             # If not, query appropriate module for a response
@@ -51,7 +55,7 @@ def process_message(message):
                 responses.append(f"Generate a meme as follows:\n\n{PREFIX}[template name]\nFirst caption\nSecond caption\netc.\n\n" + factory.list_templates())
             else:
                 # Make sure there are enough arguments
-                responses.append(factory.response(query))
+                responses.append(factory.response(template, query))
     return responses
 
 
@@ -113,7 +117,7 @@ if __name__ == "__main__":
     parser.add_argument("command", nargs="?")
     args = parser.parse_args()
     if args.command:
-        print(process_message(Message(text=args.command)))
+        print(process_message({"text": args.command, "sender_type": "user", "group_id": None}))
     else:
         while True:
-            print(process_message(Message(text=input("> "))))
+            print(process_message({"text": input("> "), "sender_type": "user", "group_id": None}))

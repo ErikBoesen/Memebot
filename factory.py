@@ -1,4 +1,3 @@
-from .base import ImageModule
 from PIL import Image, ImageFont, ImageDraw
 from textwrap import wrap
 import requests
@@ -9,6 +8,12 @@ class Factory:
     ARGC = 0
     ARGUMENT_WARNING = "Not enough arguments! Say something more after the command."
     ACCESS_TOKEN = os.environ.get("GROUPME_ACCESS_TOKEN")
+
+    def lines(self, query):
+        """
+        Split input into each individual line, for multiple-argument commands.
+        """
+        return [line for line in query.split("\n") if line != ""]
 
     def upload_image(self, data) -> str:
         """
@@ -317,10 +322,10 @@ class Factory:
         self.templates["yaledrake"] = self.templates["drake"]
         self.DESCRIPTION = "Generate memes! List the desired template, and then captions each on a new line. " + self.list_templates()
 
-    def response(self, query, message):
+    def response(self, template_name, query):
         captions = self.lines(query)
 
-        template_name = captions.pop(0).strip().lower()
+        template_name = template_name.strip().lower()
         if self.templates.get(template_name) is None:
             return f"No template found called {template_name}. " + self.list_templates()
         captions_required = len(self.templates[template_name]) - 1
