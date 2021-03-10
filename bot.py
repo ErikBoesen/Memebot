@@ -94,9 +94,9 @@ def send(message, group_id):
     # Prevent sending message if there's no content
     # It would be rejected anyway
     if data["text"] or data.get("picture_url"):
-        response = requests.post("https://api.groupme.com/v3/bots/post", json=data)
-        print("Response:")
+        print("Dispatching message:")
         print(data)
+        response = requests.post("https://api.groupme.com/v3/bots/post", json=data)
 
 
 # Core routing
