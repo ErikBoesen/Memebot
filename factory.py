@@ -27,7 +27,7 @@ class Factory:
             "X-Access-Token": self.ACCESS_TOKEN,
             "Content-Type": "image/jpeg",
         }
-        r = requests.post("https://image.groupme.com/pictures", data=data, headers=headers)
+        r = requests.post("https://image.groupme.com/pictures", json=data, headers=headers)
         return r.json()["payload"]["url"]
 
     def upload_pil_image(self, image: Image):
